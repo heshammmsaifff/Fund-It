@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FundIt – My Dashboard</title>
+    <link rel="stylesheet" href="../shared/style.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <nav class="navbar" id="navbar"></nav>
+
+    <div class="page">
+      <div class="dash-header">
+        <div>
+          <h1 class="section-title" id="welcomeMsg">My Dashboard</h1>
+          <p class="text-muted">
+            Manage your campaigns and track your pledges.
+          </p>
+        </div>
+        <button class="btn btn-primary" onclick="openCreateModal()">
+          + New Campaign
+        </button>
+      </div>
+
+      <div class="dash-tabs">
+        <button
+          class="tab-btn active"
+          id="tabCampaigns"
+          onclick="switchTab('campaigns')"
+        >
+          My Campaigns
+        </button>
+        <button class="tab-btn" id="tabPledges" onclick="switchTab('pledges')">
+          My Pledges
+        </button>
+      </div>
+
+      <div id="campaignsPanel"></div>
+      <div id="pledgesPanel" style="display: none"></div>
+    </div>
+
+    <!-- CREATE / EDIT MODAL -->
+    <div class="modal-overlay" id="campaignModal" style="display: none">
+      <div class="modal-box">
+        <h3 class="modal-title" id="modalHeading">New Campaign</h3>
+        <div id="modalAlert"></div>
+        <input type="hidden" id="editId" />
+        <div class="form-group">
+          <label>Title</label>
+          <input type="text" id="fieldTitle" placeholder="Campaign title" />
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea
+            id="fieldDesc"
+            placeholder="Describe your campaign..."
+          ></textarea>
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select id="fieldCategory">
+            <option value="technology">Technology</option>
+            <option value="music">Music</option>
+            <option value="community">Community</option>
+            <option value="art">Art</option>
+            <option value="education">Education</option>
+          </select>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Goal ($)</label>
+            <input type="number" id="fieldGoal" placeholder="5000" min="1" />
+          </div>
+          <div class="form-group">
+            <label>Deadline</label>
+            <input type="date" id="fieldDeadline" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Image (optional)</label>
+          <input type="file" id="fieldImage" accept="image/*" />
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="saveCampaign()">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../shared/api.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>

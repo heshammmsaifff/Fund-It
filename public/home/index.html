@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FundIt – Browse Campaigns</title>
+    <link rel="stylesheet" href="../shared/style.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <nav class="navbar" id="navbar"></nav>
+
+    <div class="page">
+      <div class="hero">
+        <h1>Fund ideas that matter</h1>
+        <p>Browse campaigns and support what you believe in.</p>
+      </div>
+
+      <div class="filters">
+        <input type="text" id="searchInput" placeholder="Search campaigns..." />
+        <select id="categoryFilter">
+          <option value="">All Categories</option>
+          <option value="technology">Technology</option>
+          <option value="music">Music</option>
+          <option value="community">Community</option>
+          <option value="art">Art</option>
+          <option value="education">Education</option>
+        </select>
+        <select id="sortFilter">
+          <option value="deadline">Sort by Deadline</option>
+          <option value="goal">Sort by Goal</option>
+        </select>
+      </div>
+
+      <div id="alertBox"></div>
+
+      <div id="campaignGrid" class="grid-3"></div>
+
+      <p id="emptyMsg" style="display: none" class="text-muted">
+        No campaigns found.
+      </p>
+    </div>
+
+    <script src="../shared/api.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>

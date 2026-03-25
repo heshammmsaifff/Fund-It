@@ -1,0 +1,14 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Admin User",
+      "role": "admin",
+      "isActive": true,
+      "email": "admin@fund.com",
+      "password": "admin123"
+    }
+  ],
+  "campaigns": [],
+  "pledges": []
+}
