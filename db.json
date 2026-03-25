@@ -7,6 +7,14 @@
       "isActive": true,
       "email": "admin@fund.com",
       "password": "admin123"
+    },
+    {
+      "name": "Hesham",
+      "email": "hesham@fundit.com",
+      "password": "23392399",
+      "role": "admin",
+      "isActive": true,
+      "id": 2
     }
   ],
   "campaigns": [],

@@ -46,9 +46,23 @@ const Auth = {
 function goTo(page) {
   const origin = window.location.origin;
   const path = window.location.pathname;
+
   const idx = path.indexOf("/public");
   const base = idx !== -1 ? path.substring(0, idx) : "";
+
   window.location.href = origin + base + "/" + page + "/";
+}
+
+function requireAuth() {
+  if (!Auth.isLoggedIn()) {
+    goTo("auth");
+  }
+}
+
+function requireAdmin() {
+  if (!Auth.isAdmin()) {
+    goTo("home");
+  }
 }
 
 function buildNavbar() {
@@ -56,34 +70,29 @@ function buildNavbar() {
   const root = document.getElementById("navbar");
   if (!root) return;
 
-  const origin = window.location.origin;
-  const path = window.location.pathname;
-  const idx = path.indexOf("/");
-  const base = idx !== -1 ? path.substring(0, idx) : "";
-  const root_ = origin + base;
-
   let links = "";
+
   if (!user) {
     links = `
-      <a href="${root_}/home/">Browse</a>
-      <a href="${root_}/auth/" class="btn btn-primary btn-sm">Login</a>
+      <a href="#" onclick="goTo('home')">Browse</a>
+      <a href="#" onclick="goTo('auth')" class="btn btn-primary btn-sm">Login</a>
     `;
   } else if (user.role === "admin") {
     links = `
-      <a href="${root_}/home/">Browse</a>
-      <a href="${root_}/dashboard-admin/">Admin Panel</a>
+      <a href="#" onclick="goTo('home')">Browse</a>
+      <a href="#" onclick="goTo('dashboard-admin')">Admin Panel</a>
       <a href="#" onclick="logout()">Logout</a>
     `;
   } else {
     links = `
-      <a href="${root_}/home/">Browse</a>
-      <a href="${root_}/dashboard-user/">My Dashboard</a>
+      <a href="#" onclick="goTo('home')">Browse</a>
+      <a href="#" onclick="goTo('dashboard-user')">My Dashboard</a>
       <a href="#" onclick="logout()">Logout (${user.name})</a>
     `;
   }
 
   root.innerHTML = `
-    <a class="navbar-brand" href="${root_}/home/">FundIt</a>
+    <a class="navbar-brand" href="#" onclick="goTo('home')">FundIt</a>
     <div class="navbar-links">${links}</div>
   `;
 }

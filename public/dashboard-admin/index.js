@@ -1,10 +1,16 @@
-if (!user || user.role === "admin") {
+const user = Auth.getUser();
+
+// ✅ لازم يكون أدمن
+if (!user) {
   goTo("auth");
 }
 
+if (user.role !== "admin") {
+  goTo("home");
+}
+
 function switchTab(tab) {
-  const panels = ["users", "campaigns", "pledges"];
-  panels.forEach((p) => {
+  ["users", "campaigns", "pledges"].forEach((p) => {
     document.getElementById(p + "Panel").style.display =
       p === tab ? "block" : "none";
     document
@@ -20,207 +26,108 @@ async function loadStats() {
     api.get("/pledges"),
   ]);
 
-  const totalRaised = pledges.reduce((sum, p) => sum + p.amount, 0);
-  const approved = campaigns.filter((c) => c.isApproved).length;
-  const pending = campaigns.filter((c) => !c.isApproved).length;
-  const activeUsers = users.filter(
-    (u) => u.isActive && u.role === "user",
-  ).length;
+  const total = pledges.reduce((s, p) => s + p.amount, 0);
 
-  document.getElementById("statsGrid").innerHTML =
-    statCard("$" + totalRaised.toLocaleString(), "Total Raised") +
-    statCard(approved, "Approved Campaigns") +
-    statCard(pending, "Pending Campaigns") +
-    statCard(activeUsers, "Active Users");
-}
-
-function statCard(value, label) {
-  return (
-    '<div class="stat-card">' +
-    '<div class="stat-value">' +
-    value +
-    "</div>" +
-    '<div class="stat-label">' +
-    label +
-    "</div>" +
-    "</div>"
-  );
+  document.getElementById("statsGrid").innerHTML = `
+    <div>${total}</div>
+    <div>${campaigns.length}</div>
+    <div>${users.length}</div>
+  `;
 }
 
 async function loadUsers() {
   const users = await api.get("/users");
-  const panel = document.getElementById("usersPanel");
 
-  const rows = users.map((u) => {
-    const roleBadge =
-      u.role === "admin"
-        ? '<span class="badge badge-info">Admin</span>'
-        : '<span class="badge badge-success">User</span>';
+  document.getElementById("usersPanel").innerHTML = users
+    .map(
+      (u) => `
+    <div style="margin-bottom:10px; padding:10px; border:1px solid #ccc">
+      <div>
+        <strong>${u.name}</strong> (${u.role})
+      </div>
 
-    const statusBadge = u.isActive
-      ? '<span class="badge badge-success">Active</span>'
-      : '<span class="badge badge-danger">Banned</span>';
+      <div style="margin:5px 0">
+        Status: 
+        <span style="color:${u.isActive ? "green" : "red"}">
+          ${u.isActive ? "Active" : "Banned"}
+        </span>
+      </div>
 
-    const banBtn =
-      u.role !== "admin"
-        ? u.isActive
-          ? '<button class="btn btn-danger btn-sm" onclick="toggleBan(' +
-            u.id +
-            ', false)">Ban</button>'
-          : '<button class="btn btn-success btn-sm" onclick="toggleBan(' +
-            u.id +
-            ', true)">Unban</button>'
-        : "";
+      ${
+        u.role !== "admin"
+          ? `<button onclick="toggleBan(${u.id}, ${!u.isActive})">
+              ${u.isActive ? "Ban User" : "Unban User"}
+            </button>`
+          : ""
+      }
 
-    return (
-      "<tr>" +
-      "<td>" +
-      u.id +
-      "</td>" +
-      "<td>" +
-      u.name +
-      "</td>" +
-      "<td>" +
-      u.email +
-      "</td>" +
-      "<td>" +
-      roleBadge +
-      "</td>" +
-      "<td>" +
-      statusBadge +
-      "</td>" +
-      "<td>" +
-      banBtn +
-      "</td>" +
-      "</tr>"
-    );
-  });
-
-  panel.innerHTML =
-    '<div class="table-wrap">' +
-    '<table class="table">' +
-    "<thead><tr>" +
-    "<th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Action</th>" +
-    "</tr></thead>" +
-    "<tbody>" +
-    rows.join("") +
-    "</tbody>" +
-    "</table>" +
-    "</div>";
+      <button onclick="toggleRole(${u.id}, '${u.role}')">
+        ${u.role === "admin" ? "Remove Admin" : "Make Admin"}
+      </button>
+    </div>
+  `,
+    )
+    .join("");
 }
-
 async function loadCampaigns() {
   const campaigns = await api.get("/campaigns");
-  const panel = document.getElementById("campaignsPanel");
 
-  const rows = campaigns.map((c) => {
-    const statusBadge = c.isApproved
-      ? '<span class="badge badge-success">Approved</span>'
-      : '<span class="badge badge-warning">Pending</span>';
-
-    const approveBtn = c.isApproved
-      ? '<button class="btn btn-outline btn-sm" onclick="toggleApprove(' +
-        c.id +
-        ', false)">Reject</button>'
-      : '<button class="btn btn-success btn-sm" onclick="toggleApprove(' +
-        c.id +
-        ', true)">Approve</button>';
-
-    return (
-      "<tr>" +
-      "<td>" +
-      c.id +
-      "</td>" +
-      "<td>" +
-      c.title +
-      "</td>" +
-      "<td>" +
-      c.category +
-      "</td>" +
-      "<td>$" +
-      c.goal.toLocaleString() +
-      "</td>" +
-      "<td>" +
-      formatDate(c.deadline) +
-      "</td>" +
-      "<td>" +
-      statusBadge +
-      "</td>" +
-      '<td style="display:flex;gap:6px">' +
-      approveBtn +
-      '<button class="btn btn-danger btn-sm" onclick="deleteCampaign(' +
-      c.id +
-      ')">Delete</button>' +
-      "</td>" +
-      "</tr>"
-    );
-  });
-
-  panel.innerHTML =
-    '<div class="table-wrap">' +
-    '<table class="table">' +
-    "<thead><tr>" +
-    "<th>ID</th><th>Title</th><th>Category</th><th>Goal</th><th>Deadline</th><th>Status</th><th>Actions</th>" +
-    "</tr></thead>" +
-    "<tbody>" +
-    rows.join("") +
-    "</tbody>" +
-    "</table>" +
-    "</div>";
+  document.getElementById("campaignsPanel").innerHTML = campaigns
+    .map(
+      (c) => `
+    <div>
+      ${c.title}
+      <button onclick="toggleApprove(${c.id}, ${!c.isApproved})">
+        ${c.isApproved ? "Reject" : "Approve"}
+      </button>
+    </div>
+  `,
+    )
+    .join("");
 }
 
 async function loadPledges() {
   const pledges = await api.get("/pledges");
-  const panel = document.getElementById("pledgesPanel");
 
-  const rows = pledges.map(
-    (p) =>
-      "<tr>" +
-      "<td>" +
-      p.id +
-      "</td>" +
-      "<td>" +
-      p.campaignId +
-      "</td>" +
-      "<td>" +
-      p.userId +
-      "</td>" +
-      "<td>$" +
-      p.amount.toLocaleString() +
-      "</td>" +
-      "</tr>",
-  );
-
-  panel.innerHTML =
-    '<div class="table-wrap">' +
-    '<table class="table">' +
-    "<thead><tr>" +
-    "<th>ID</th><th>Campaign ID</th><th>User ID</th><th>Amount</th>" +
-    "</tr></thead>" +
-    "<tbody>" +
-    rows.join("") +
-    "</tbody>" +
-    "</table>" +
-    "</div>";
+  document.getElementById("pledgesPanel").innerHTML = pledges
+    .map(
+      (p) => `
+    <div>
+      ${p.id} - $${p.amount}
+    </div>
+  `,
+    )
+    .join("");
 }
 
 async function toggleBan(id, isActive) {
+  const before = await api.get("/users/" + id);
+
   await api.patch("/users/" + id, { isActive });
+
+  const after = await api.get("/users/" + id);
+
   loadUsers();
-  loadStats();
 }
 
 async function toggleApprove(id, isApproved) {
   await api.patch("/campaigns/" + id, { isApproved });
   loadCampaigns();
-  loadStats();
 }
 
-async function deleteCampaign(id) {
-  if (!confirm("Delete this campaign? This cannot be undone.")) return;
-  await api.delete("/campaigns/" + id);
-  loadCampaigns();
-  loadStats();
+async function toggleRole(id, currentRole) {
+  console.log("Current role:", currentRole);
+
+  const newRole = currentRole === "admin" ? "user" : "admin";
+
+  console.log("New role:", newRole);
+
+  await api.patch("/users/" + id, { role: newRole });
+
+  const updated = await api.get("/users/" + id);
+  console.log("After update:", updated);
+
+  loadUsers();
 }
 
 buildNavbar();
