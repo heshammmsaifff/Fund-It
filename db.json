@@ -17,6 +17,16 @@
       "id": 2
     }
   ],
-  "campaigns": [],
+  "campaigns": [
+    {
+      "title": "title",
+      "description": "desc ",
+      "goal": 300,
+      "deadline": "2026-03-27",
+      "creatorId": 2,
+      "isApproved": true,
+      "id": 1
+    }
+  ],
   "pledges": []
 }

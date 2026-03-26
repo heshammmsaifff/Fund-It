@@ -90,13 +90,47 @@ async function loadPledges() {
   panel.innerHTML = rows.join("");
 }
 
+function openCreateModal() {
+  editingId = null;
+
+  document.getElementById("modalHeading").textContent = "New Campaign";
+
+  document.getElementById("fieldTitle").value = "";
+  document.getElementById("fieldDesc").value = "";
+  document.getElementById("fieldGoal").value = "";
+  document.getElementById("fieldDeadline").value = "";
+
+  document.getElementById("campaignModal").style.display = "flex";
+}
+
+function closeModal() {
+  document.getElementById("campaignModal").style.display = "none";
+}
+
+async function openEditModal(id) {
+  const c = await api.get("/campaigns/" + id);
+
+  editingId = id;
+  document.getElementById("modalHeading").textContent = "Edit Campaign";
+
+  document.getElementById("fieldTitle").value = c.title;
+  document.getElementById("fieldDesc").value = c.description;
+  document.getElementById("fieldGoal").value = c.goal;
+  document.getElementById("fieldDeadline").value = c.deadline;
+
+  document.getElementById("campaignModal").style.display = "flex";
+}
+
 async function saveCampaign() {
   const title = document.getElementById("fieldTitle").value;
   const desc = document.getElementById("fieldDesc").value;
   const goal = +document.getElementById("fieldGoal").value;
   const deadline = document.getElementById("fieldDeadline").value;
 
-  if (!title || !desc || !goal || !deadline) return;
+  if (!title || !desc || !goal || !deadline) {
+    alert("Please fill all fields");
+    return;
+  }
 
   if (editingId) {
     await api.patch("/campaigns/" + editingId, {
@@ -116,6 +150,7 @@ async function saveCampaign() {
     });
   }
 
+  closeModal();
   loadCampaigns();
 }
 
