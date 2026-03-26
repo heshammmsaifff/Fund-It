@@ -88,9 +88,9 @@ function renderImage() {
 
 function renderStat(label, value) {
   return `
-    <div class="stat-item">
-      <span class="stat-label">${label}</span>
-      <span class="stat-value">${value}</span>
+    <div class="meta-item">
+      <span>${label}</span>
+      <span>${value}</span>
     </div>
   `;
 }
@@ -114,18 +114,19 @@ function renderPledges() {
 
 function renderSidebar(raised, percent, canPledge, isOwner, user, isExpired) {
   return `
-    <div class="sidebar-box">
+    <div class="sidebar-card">
       
-      <div class="amount-raised">
+      <div class="raised-amount">
         $${raised.toLocaleString()}
       </div>
       <div class="goal-text">
         raised of $${campaign.goal.toLocaleString()}
       </div>
 
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: ${percent}%"></div>
+      <div class="progress-wrap">
+        <div class="progress-bar" style="width: ${percent}%"></div>
       </div>
+      
 
       ${renderPledgeButton(canPledge, isOwner, user, isExpired)}
 

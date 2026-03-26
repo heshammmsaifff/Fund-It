@@ -15,6 +15,14 @@
       "role": "user",
       "isActive": true,
       "id": 2
+    },
+    {
+      "name": "ali",
+      "email": "ali@fund.com",
+      "password": "23392399",
+      "role": "user",
+      "isActive": true,
+      "id": 3
     }
   ],
   "campaigns": [
@@ -30,5 +38,12 @@
       "category": "community"
     }
   ],
-  "pledges": []
+  "pledges": [
+    {
+      "campaignId": 1,
+      "userId": 3,
+      "amount": 100,
+      "id": 1
+    }
+  ]
 }

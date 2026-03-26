@@ -166,3 +166,103 @@
     font-size: 28px;
   }
 }
+
+.progress-wrap {
+  width: 100%;
+  background-color: var(--primary-soft);
+  height: 10px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 15px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 10px;
+  transition: width 0.5s ease-in-out;
+}
+
+.w-full {
+  width: 100%;
+  display: block;
+}
+
+.mt-2 {
+  margin-top: 16px;
+}
+
+.pledges-section h3 {
+  margin-top: 40px;
+  margin-bottom: 20px;
+  font-size: 20px;
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 10px;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.modal-box {
+  background: var(--surface);
+  border-radius: 20px;
+  padding: 32px;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border);
+  position: relative;
+  animation: modalSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 24px;
+  letter-spacing: -0.5px;
+}
+
+.modal-box .form-group {
+  margin-bottom: 24px;
+}
+
+.modal-box .form-group label {
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.modal-box .form-group input {
+  height: 48px;
+  font-size: 16px;
+  border-width: 2px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+@keyframes modalSlideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
