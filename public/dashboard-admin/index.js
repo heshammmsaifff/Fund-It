@@ -1,6 +1,5 @@
 const user = Auth.getUser();
 
-// ✅ لازم يكون أدمن
 if (!user) {
   goTo("auth");
 }
@@ -101,12 +100,7 @@ async function loadPledges() {
 }
 
 async function toggleBan(id, isActive) {
-  const before = await api.get("/users/" + id);
-
   await api.patch("/users/" + id, { isActive });
-
-  const after = await api.get("/users/" + id);
-
   loadUsers();
 }
 
@@ -123,9 +117,6 @@ async function toggleRole(id, currentRole) {
   console.log("New role:", newRole);
 
   await api.patch("/users/" + id, { role: newRole });
-
-  const updated = await api.get("/users/" + id);
-  console.log("After update:", updated);
 
   loadUsers();
 }

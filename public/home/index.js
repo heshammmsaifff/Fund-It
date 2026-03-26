@@ -70,9 +70,8 @@ async function renderCampaigns(campaigns) {
 }
 
 document.getElementById("searchInput").addEventListener("input", loadCampaigns);
-document
-  .getElementById("categoryFilter")
-  .addEventListener("change", loadCampaigns);
+const filter = document.getElementById("categoryFilter");
+filter.addEventListener("change", loadCampaigns);
 document.getElementById("sortFilter").addEventListener("change", loadCampaigns);
 
 buildNavbar();

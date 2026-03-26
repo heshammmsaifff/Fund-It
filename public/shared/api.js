@@ -44,13 +44,7 @@ const Auth = {
 };
 
 function goTo(page) {
-  const origin = window.location.origin;
-  const path = window.location.pathname;
-
-  const idx = path.indexOf("/public");
-  const base = idx !== -1 ? path.substring(0, idx) : "";
-
-  window.location.href = origin + base + "/" + page + "/";
+  window.location.href = `/${page}/`;
 }
 
 function requireAuth() {
@@ -67,8 +61,8 @@ function requireAdmin() {
 
 function buildNavbar() {
   const user = Auth.getUser();
-  const root = document.getElementById("navbar");
-  if (!root) return;
+  const nav = document.getElementById("navbar");
+  if (!nav) return;
 
   let links = "";
 
@@ -91,7 +85,7 @@ function buildNavbar() {
     `;
   }
 
-  root.innerHTML = `
+  nav.innerHTML = `
     <a class="navbar-brand" href="#" onclick="goTo('home')">FundIt</a>
     <div class="navbar-links">${links}</div>
   `;

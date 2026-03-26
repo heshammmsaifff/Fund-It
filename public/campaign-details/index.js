@@ -28,103 +28,119 @@ async function loadPage() {
 async function renderPage() {
   const raised = pledges.reduce((sum, p) => sum + p.amount, 0);
   const percent = calcPercent(raised, campaign.goal);
+  const safePercent = Math.min(percent, 100);
+
   const user = Auth.getUser();
-  const isOwner = user && user.id === campaign.creatorId;
+  const isOwner = user?.id === campaign.creatorId;
   const canPledge = user && !isOwner && user.role !== "admin";
+  const isExpired = new Date() > new Date(campaign.deadline);
 
-  const imgHtml = campaign.image
-    ? '<div class="campaign-img"><img src="' +
-      campaign.image +
-      '" alt="' +
-      campaign.title +
-      '" /></div>'
-    : '<div class="campaign-img"><span>No Image</span></div>';
+  const content = `
+    <a href="../home/" class="text-sm text-muted">&larr; Back to campaigns</a>
+    <div class="campaign-layout">
+      
+      <div class="main-content">
+        ${renderImage()}
+        <div class="campaign-title">${campaign.title}</div>
 
-  let pledgeBtn = "";
-  if (canPledge) {
-    pledgeBtn =
-      '<button class="btn btn-primary" style="width:100%;margin-top:8px" onclick="openModal()">Back this Campaign</button>';
-  } else if (!user) {
-    pledgeBtn =
-      '<a href="../auth/" class="btn btn-primary" style="width:100%;display:block;text-align:center;margin-top:8px">Login to Support</a>';
-  } else if (isOwner) {
-    pledgeBtn =
-      '<p class="text-muted" style="font-size:13px;margin-top:8px">This is your campaign.</p>';
+        <div class="campaign-meta">
+          ${renderStat("Deadline", formatDate(campaign.deadline))}
+          ${renderStat("Category", `<span class="badge badge-info">${campaign.category}</span>`)}
+          ${renderStat(
+            "Status",
+            campaign.isApproved
+              ? `<span class="badge badge-success">Approved</span>`
+              : `<span class="badge badge-warning">Pending</span>`,
+          )}
+        </div>
+
+        <p class="campaign-description">${campaign.description}</p>
+
+        <div class="pledges-section">
+          <h3 class="text-base font-semibold mb-3">
+            Backers (${pledges.length})
+          </h3>
+          ${renderPledges()}
+        </div>
+      </div>
+
+      <div class="sidebar">
+        ${renderSidebar(raised, safePercent, canPledge, isOwner, user, isExpired)}
+      </div>
+
+    </div>
+  `;
+
+  document.getElementById("content").innerHTML = content;
+}
+
+function renderImage() {
+  if (campaign.image) {
+    return `
+      <div class="campaign-img">
+        <img src="${campaign.image}" alt="${campaign.title}" />
+      </div>
+    `;
   }
 
-  const pledgeRows =
-    pledges.length > 0
-      ? pledges
-          .map(
-            (p) =>
-              '<div class="pledge-item"><span>Backer #' +
-              p.userId +
-              '</span><span style="font-weight:600;color:var(--primary)">$' +
-              p.amount.toLocaleString() +
-              "</span></div>",
-          )
-          .join("")
-      : '<p class="text-muted">No pledges yet. Be the first!</p>';
+  return `<div class="campaign-img"><span>No Image</span></div>`;
+}
 
-  document.getElementById("content").innerHTML =
-    '<a href="../home/" style="font-size:13px;color:var(--text-muted)">&larr; Back to campaigns</a>' +
-    '<div class="campaign-layout">' +
-    "<div>" +
-    imgHtml +
-    '<div class="campaign-title">' +
-    campaign.title +
-    "</div>" +
-    '<div class="campaign-meta">' +
-    '<div class="meta-item"><strong>' +
-    formatDate(campaign.deadline) +
-    "</strong>Deadline</div>" +
-    '<div class="meta-item"><strong><span class="badge badge-info">' +
-    campaign.category +
-    "</span></strong>Category</div>" +
-    '<div class="meta-item"><strong>' +
-    (campaign.isApproved
-      ? '<span class="badge badge-success">Approved</span>'
-      : '<span class="badge badge-warning">Pending</span>') +
-    "</strong>Status</div>" +
-    "</div>" +
-    '<p class="campaign-description">' +
-    campaign.description +
-    "</p>" +
-    '<div class="pledges-section">' +
-    '<h3 style="font-size:16px;font-weight:600;margin-bottom:12px">Backers (' +
-    pledges.length +
-    ")</h3>" +
-    pledgeRows +
-    "</div>" +
-    "</div>" +
-    "<div>" +
-    '<div class="sidebar-card">' +
-    '<div class="raised-amount">$' +
-    raised.toLocaleString() +
-    "</div>" +
-    '<div class="goal-text">raised of $' +
-    campaign.goal.toLocaleString() +
-    " goal</div>" +
-    '<div class="progress-wrap"><div class="progress-bar" style="width:' +
-    percent +
-    '%"></div></div>' +
-    '<div class="percent-text">' +
-    percent +
-    "% funded</div>" +
-    '<hr class="sidebar-divider" />' +
-    '<div class="sidebar-stat"><span>Backers</span><span>' +
-    pledges.length +
-    "</span></div>" +
-    '<div class="sidebar-stat"><span>Deadline</span><span>' +
-    formatDate(campaign.deadline) +
-    "</span></div>" +
-    '<div class="sidebar-stat"><span>Goal</span><span>$' +
-    campaign.goal.toLocaleString() +
-    "</span></div>" +
-    pledgeBtn +
-    "</div>" +
-    "</div>" +
-    "</div>";
+function renderImage() {
+  if (campaign.image) {
+    return `
+      <div class="campaign-img">
+        <img src="${campaign.image}" alt="${campaign.title}" />
+      </div>
+    `;
+  }
+
+  return `<div class="campaign-img"><span>No Image</span></div>`;
+}
+
+function renderPledges() {
+  if (pledges.length === 0) {
+    return `<p class="text-muted">No pledges yet. Be the first!</p>`;
+  }
+
+  return pledges
+    .map(
+      (p) => `
+      <div class="pledge-item">
+        <span>Backer #${p.userId}</span>
+        <span class="font-semibold text-primary">$${p.amount.toLocaleString()}</span>
+      </div>
+    `,
+    )
+    .join("");
+}
+
+function renderPledgeButton(canPledge, isOwner, user, isExpired) {
+  if (isExpired) {
+    return `<p class="text-muted text-sm mt-2">Campaign ended.</p>`;
+  }
+
+  if (canPledge) {
+    return `
+      <button class="btn btn-primary w-full mt-2" onclick="openModal()">
+        Back this Campaign
+      </button>
+    `;
+  }
+
+  if (!user) {
+    return `
+      <a href="../auth/" class="btn btn-primary w-full block text-center mt-2">
+        Login to Support
+      </a>
+    `;
+  }
+
+  if (isOwner) {
+    return `<p class="text-muted text-sm mt-2">This is your campaign.</p>`;
+  }
+
+  return "";
 }
 
 function openModal() {
@@ -147,11 +163,7 @@ function confirmPledge() {
   pendingAmount = amount;
   closeModal();
   document.getElementById("paymentMsg").textContent =
-    "You are pledging $" +
-    amount +
-    ' to "' +
-    campaign.title +
-    '". This is a mock payment.';
+    "You are pledging $" + amount + ' to "' + campaign.title;
   document.getElementById("cardNumber").value = "";
   document.getElementById("cardExpiry").value = "";
   document.getElementById("cardCvv").value = "";
@@ -189,7 +201,7 @@ async function processPledge() {
     '<div class="alert alert-success">Pledge submitted successfully! Thank you.</div>';
   setTimeout(() => {
     document.getElementById("alertBox").innerHTML = "";
-  }, 4000);
+  }, 5000);
 }
 
 buildNavbar();

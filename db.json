@@ -12,7 +12,7 @@
       "name": "Hesham",
       "email": "hesham@fundit.com",
       "password": "23392399",
-      "role": "admin",
+      "role": "user",
       "isActive": true,
       "id": 2
     }

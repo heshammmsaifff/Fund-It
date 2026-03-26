@@ -1,11 +1,9 @@
 const user = Auth.getUser();
 
-// ✅ حماية الصفحة
 if (!user) {
   goTo("auth");
 }
 
-// ❌ امنع الأدمن يدخل هنا
 if (user.role === "admin") {
   goTo("dashboard-admin");
 }
