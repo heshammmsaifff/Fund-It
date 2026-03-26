@@ -28,6 +28,15 @@ function switchTab(tab) {
     .classList.toggle("active", !isCampaigns);
 }
 
+function toBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+  });
+}
+
 async function loadCampaigns() {
   const campaigns = await api.get("/campaigns?creatorId=" + user.id);
   const panel = document.getElementById("campaignsPanel");
@@ -126,18 +135,28 @@ async function saveCampaign() {
   const desc = document.getElementById("fieldDesc").value;
   const goal = +document.getElementById("fieldGoal").value;
   const deadline = document.getElementById("fieldDeadline").value;
+  const imageFile = document.getElementById("fieldImage").files[0];
 
   if (!title || !desc || !goal || !deadline) {
     alert("Please fill all fields");
     return;
   }
 
+  let image = null;
+
+  if (imageFile) {
+    image = await toBase64(imageFile);
+  }
+
   if (editingId) {
+    const old = await api.get("/campaigns/" + editingId);
+
     await api.patch("/campaigns/" + editingId, {
       title,
       description: desc,
       goal,
       deadline,
+      image: image || old.image || null,
     });
   } else {
     await api.post("/campaigns", {
@@ -147,6 +166,7 @@ async function saveCampaign() {
       deadline,
       creatorId: user.id,
       isApproved: false,
+      image: image,
     });
   }
 
