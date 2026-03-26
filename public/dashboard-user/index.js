@@ -136,6 +136,7 @@ async function saveCampaign() {
   const goal = +document.getElementById("fieldGoal").value;
   const deadline = document.getElementById("fieldDeadline").value;
   const imageFile = document.getElementById("fieldImage").files[0];
+  const category = document.getElementById("fieldCategory").value;
 
   if (!title || !desc || !goal || !deadline) {
     alert("Please fill all fields");
@@ -156,6 +157,7 @@ async function saveCampaign() {
       description: desc,
       goal,
       deadline,
+      category,
       image: image || old.image || null,
     });
   } else {
@@ -165,6 +167,7 @@ async function saveCampaign() {
       goal,
       deadline,
       creatorId: user.id,
+      category,
       isApproved: false,
       image: image,
     });

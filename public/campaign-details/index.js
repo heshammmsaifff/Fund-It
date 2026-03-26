@@ -86,16 +86,13 @@ function renderImage() {
   return `<div class="campaign-img"><span>No Image</span></div>`;
 }
 
-function renderImage() {
-  if (campaign.image) {
-    return `
-      <div class="campaign-img">
-        <img src="${campaign.image}" alt="${campaign.title}" />
-      </div>
-    `;
-  }
-
-  return `<div class="campaign-img"><span>No Image</span></div>`;
+function renderStat(label, value) {
+  return `
+    <div class="stat-item">
+      <span class="stat-label">${label}</span>
+      <span class="stat-value">${value}</span>
+    </div>
+  `;
 }
 
 function renderPledges() {
@@ -113,6 +110,27 @@ function renderPledges() {
     `,
     )
     .join("");
+}
+
+function renderSidebar(raised, percent, canPledge, isOwner, user, isExpired) {
+  return `
+    <div class="sidebar-box">
+      
+      <div class="amount-raised">
+        $${raised.toLocaleString()}
+      </div>
+      <div class="goal-text">
+        raised of $${campaign.goal.toLocaleString()}
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: ${percent}%"></div>
+      </div>
+
+      ${renderPledgeButton(canPledge, isOwner, user, isExpired)}
+
+    </div>
+  `;
 }
 
 function renderPledgeButton(canPledge, isOwner, user, isExpired) {

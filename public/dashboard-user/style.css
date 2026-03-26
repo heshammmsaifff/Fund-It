@@ -1,26 +1,39 @@
+/* Dashboard Header */
 .dash-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 24px;
+  align-items: center; /* سنترت العناصر لتبدو أكثر تناسقاً */
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
 }
 
+/* Dashboard Tabs */
 .dash-tabs {
   display: flex;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 24px;
+  gap: 8px; /* مسافة بين الـ Tabs */
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 32px;
 }
 
 .tab-btn {
   background: none;
   border: none;
-  padding: 10px 20px;
+  padding: 12px 24px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   color: var(--text-muted);
+  position: relative;
+  transition: var(--transition);
   border-bottom: 2px solid transparent;
-  margin-bottom: -1px;
+  margin-bottom: -2px; /* لتغطية خط الـ border السفلي للـ tabs */
+}
+
+.tab-btn:hover {
+  color: var(--primary);
+  background: var(--primary-soft);
+  border-radius: var(--radius) var(--radius) 0 0;
 }
 
 .tab-btn.active {
@@ -28,20 +41,25 @@
   border-bottom-color: var(--primary);
 }
 
-.tab-btn:hover {
-  color: var(--primary);
-}
-
+/* Campaign Row - التحول من شكل تقليدي لشكل "كارت" ناعم */
 .campaign-row {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 16px 20px;
-  margin-bottom: 12px;
+  padding: 20px 24px;
+  margin-bottom: 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 16px;
+  gap: 20px;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+
+.campaign-row:hover {
+  border-color: var(--primary);
+  transform: translateX(4px); /* حركة بسيطة لليمين تعطي شعور بالتفاعل */
+  box-shadow: var(--shadow-md);
 }
 
 .campaign-row-info {
@@ -49,74 +67,123 @@
 }
 
 .campaign-row-title {
-  font-size: 15px;
-  font-weight: 600;
-  margin-bottom: 4px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
 }
 
 .campaign-row-meta {
   font-size: 13px;
   color: var(--text-muted);
   display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
 }
 
-.campaign-row-actions {
+.campaign-row-meta span {
   display: flex;
-  gap: 8px;
-  flex-shrink: 0;
+  align-items: center;
+  gap: 6px;
 }
 
+/* Pledge Row */
 .pledge-row {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: var(--primary-soft); /* تمييز صفوف التبرع بلون ناعم */
+  border: 1px dashed var(--primary); /* إطار متقطع لإعطاء شكل مختلف */
   border-radius: var(--radius);
-  padding: 14px 20px;
-  margin-bottom: 10px;
+  padding: 16px 24px;
+  margin-bottom: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 14px;
+  transition: var(--transition);
 }
 
 .pledge-amount {
-  font-weight: 700;
+  font-weight: 800;
   color: var(--primary);
-  font-size: 16px;
+  font-size: 18px;
+  background: #fff;
+  padding: 4px 12px;
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
 }
 
+/* Modal Styling */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(15, 23, 42, 0.6); /* لون Slate غامق مع شفافية */
+  backdrop-filter: blur(4px); /* تأثير ضبابي للخلفية */
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 200;
   padding: 20px;
+  animation: fadeIn 0.3s ease;
 }
 
 .modal-box {
   background: var(--surface);
-  border-radius: var(--radius);
-  padding: 28px;
+  border-radius: 16px; /* زوايا أكثر استدارة للمودال */
+  padding: 32px;
   width: 100%;
-  max-width: 520px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+  max-width: 550px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   max-height: 90vh;
   overflow-y: auto;
+  position: relative;
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .modal-title {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 20px;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 24px;
+  letter-spacing: -0.5px;
 }
 
 .modal-actions {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   justify-content: flex-end;
-  margin-top: 8px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive Customization */
+@media (max-width: 640px) {
+  .campaign-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .campaign-row-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
 }

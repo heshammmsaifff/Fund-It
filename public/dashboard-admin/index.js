@@ -28,9 +28,9 @@ async function loadStats() {
   const total = pledges.reduce((s, p) => s + p.amount, 0);
 
   document.getElementById("statsGrid").innerHTML = `
-    <div>${total}</div>
-    <div>${campaigns.length}</div>
-    <div>${users.length}</div>
+    <div>${total} EGP</div>
+    <div>${campaigns.length} Campaigns</div>
+    <div>${users.length} Users</div>
   `;
 }
 
